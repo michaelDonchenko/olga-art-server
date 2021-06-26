@@ -116,3 +116,47 @@ exports.deleteProduct = async (req, res) => {
     })
   }
 }
+
+exports.getRandomProducts = async (req, res) => {
+  try {
+    let count = await Product.countDocuments()
+    if (count === 0) {
+      return res.status(400).json({ message: 'No products yet' })
+    }
+
+    let numbers = []
+    let limit = count < 5 ? count : 5
+
+    const getRandomNumbers = async () => {
+      for (let i = 0; i < limit; i++) {
+        let num = Math.floor(Math.random() * count)
+        if (numbers.includes(num) === true) {
+          i--
+        }
+        if (numbers.includes(num) === false) {
+          numbers.push(num)
+        }
+      }
+    }
+
+    await getRandomNumbers()
+    let products = await Product.find()
+    let productsToSend = []
+
+    const randomProducts = async (numbers) => {
+      for (let i = 0; i < count; i++) {
+        productsToSend.push(products[numbers[i]])
+      }
+    }
+
+    await randomProducts(numbers)
+
+    return res.status(200).json({ products: productsToSend })
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred, for any issue please you can contact us.',
+    })
+  }
+}

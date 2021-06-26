@@ -5,6 +5,7 @@ const {
   getProduct,
   updateProduct,
   deleteProduct,
+  getRandomProducts,
 } = require('../controllers/product')
 const { userAuth, adminCheck } = require('../middlewares/auth-middleware')
 const { validationMiddleware } = require('../middlewares/express-validator')
@@ -33,5 +34,6 @@ router.put(
 router.delete('/delete/:id', userAuth, adminCheck, deleteProduct)
 router.get('/products', getProducts)
 router.get('/product/:id', getProduct)
+router.get('/get-random-products', getRandomProducts)
 
 module.exports = router
