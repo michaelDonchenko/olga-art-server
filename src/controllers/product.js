@@ -5,6 +5,7 @@ const {
   CLOUDINARY_API_SECRET,
 } = require('../constants')
 const cloudinary = require('cloudinary')
+const Category = require('../models/Category')
 
 //cloudinary config
 cloudinary.config({
@@ -37,12 +38,64 @@ exports.createProduct = async (req, res) => {
 }
 
 exports.getProducts = async (req, res) => {
-  try {
-    const products = await Product.find()
-      .populate('category')
-      .sort([['createdAt', -1]])
+  //query params
+  const categoriesQuery = await Category.find()
+  let categories = []
+  const createCategoriesArray = async () => {
+    for (let i = 0; i < categoriesQuery.length; i++) {
+      categories.push(categoriesQuery[i]._id)
+    }
+  }
 
-    return res.status(201).json({ products })
+  await createCategoriesArray()
+
+  const quantity = req.query.quantity || Infinity
+  const category = req.query.category || categories
+  const productsToDisplay = req.query.products || 'all'
+  let sort = req.query.sort || 'createdAt'
+  let order = -1
+  //pagination variables
+  const pageSize = Number(req.query.pageSize) || 6
+  const page = Number(req.query.page) || 1
+
+  let productsFilter = {}
+
+  if (productsToDisplay === 'all') {
+    productsFilter = { $gte: 0 }
+  }
+  if (productsToDisplay === 'inStock') {
+    productsFilter = { $gte: 1 }
+  }
+  if (productsToDisplay === 'outStock') {
+    productsFilter = { $lte: 0 }
+  }
+
+  let queryOBJ = {
+    quantity: productsFilter,
+    category: category,
+  }
+
+  if (req.query.sort === 'high price') {
+    sort = 'price'
+  }
+
+  if (req.query.sort === 'low price') {
+    sort = 'price'
+    order = 1
+  }
+
+  try {
+    const count = await Product.countDocuments(queryOBJ)
+    const products = await Product.find(queryOBJ)
+
+      .populate('category')
+      .sort([[sort, order]])
+      .limit(parseInt(pageSize))
+      .skip(pageSize * (page - 1))
+
+    let pages = Math.ceil(count / pageSize)
+
+    return res.status(201).json({ products, pages, page })
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({
@@ -54,6 +107,7 @@ exports.getProducts = async (req, res) => {
 
 exports.getProduct = async (req, res) => {
   const { id } = req.params
+
   try {
     const product = await Product.findById(id).populate('category')
 
@@ -140,11 +194,12 @@ exports.getRandomProducts = async (req, res) => {
     }
 
     await getRandomNumbers()
+
     let products = await Product.find()
     let productsToSend = []
 
     const randomProducts = async (numbers) => {
-      for (let i = 0; i < count; i++) {
+      for (let i = 0; i < limit; i++) {
         productsToSend.push(products[numbers[i]])
       }
     }
