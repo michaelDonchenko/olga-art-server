@@ -75,7 +75,7 @@ exports.deleteProductImage = async (req, res) => {
       })
     }
 
-    cloudinary.uploader.destroy(public_id, async ({ result }) => {
+    await cloudinary.uploader.destroy(public_id, async ({ result }) => {
       //if cloudinary deleted the image
       if (result === 'ok') {
         let filtered = await product.images.filter(

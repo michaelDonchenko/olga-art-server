@@ -37,6 +37,13 @@ const productSchema = new Schema(
         public_id: String,
       },
     ],
+
+    wishlist: [
+      {
+        type: ObjectId,
+        ref: 'User',
+      },
+    ],
   },
   { timestamps: true }
 )

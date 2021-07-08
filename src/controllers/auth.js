@@ -89,7 +89,7 @@ exports.allUsers = async (req, res) => {
   const page = req.query.page ? parseInt(req.query.page) : 1
   try {
     const users = await User.find()
-      .select('_id email role verified')
+      .select('_id email role verified createdAt')
       .sort({ createdAt: -1 })
       .skip((page - 1) * limit)
       .limit(limit)
@@ -104,9 +104,7 @@ exports.allUsers = async (req, res) => {
     }
 
     return res.status(200).json({
-      success: true,
-      users: users,
-      count: count,
+      users,
       pages: Math.ceil(count / limit),
     })
   } catch (error) {

@@ -6,6 +6,7 @@ const {
 } = require('../constants')
 const cloudinary = require('cloudinary')
 const Category = require('../models/Category')
+const { ConnectionStates } = require('mongoose')
 
 //cloudinary config
 cloudinary.config({
@@ -87,7 +88,6 @@ exports.getProducts = async (req, res) => {
   try {
     const count = await Product.countDocuments(queryOBJ)
     const products = await Product.find(queryOBJ)
-
       .populate('category')
       .sort([[sort, order]])
       .limit(parseInt(pageSize))
@@ -207,6 +207,37 @@ exports.getRandomProducts = async (req, res) => {
     await randomProducts(numbers)
 
     return res.status(200).json({ products: productsToSend })
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred, for any issue please you can contact us.',
+    })
+  }
+}
+
+exports.addToWishlist = async (req, res) => {
+  const user = req.user
+  const { productId } = req.body
+
+  try {
+    let product = await Product.findById(productId)
+
+    let userIdIndex = product.wishlist.indexOf(user._id)
+
+    //if user not found
+    if (userIdIndex === -1) {
+      product.wishlist.push(user._id)
+      await product.save()
+
+      return res.status(200).json({ message: 'Product added to wishlist' })
+    }
+
+    //if user found remove id from wishlist array
+    product.wishlist.splice(userIdIndex, 1)
+
+    await product.save()
+    return res.status(200).json({ message: 'Product deleted from wishlist' })
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({
