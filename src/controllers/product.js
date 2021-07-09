@@ -253,3 +253,25 @@ exports.addToWishlist = async (req, res) => {
     })
   }
 }
+
+exports.adminProducts = async (req, res) => {
+  const page = parseInt(req.query.page) || 1
+  try {
+    const count = await Product.countDocuments()
+    const products = await Product.find()
+      .populate('category')
+      .sort([['createdAt', -1]])
+      .limit(6)
+      .skip(6 * (page - 1))
+
+    let pages = Math.ceil(count / 6)
+
+    return res.status(201).json({ products, pages, page })
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred, for any issue please you can contact us.',
+    })
+  }
+}
