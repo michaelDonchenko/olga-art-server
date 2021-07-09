@@ -107,11 +107,18 @@ exports.getProducts = async (req, res) => {
 
 exports.getProduct = async (req, res) => {
   const { id } = req.params
+  let images = []
 
   try {
     const product = await Product.findById(id).populate('category')
 
-    return res.status(201).json({ product })
+    if (product.images.length > 0) {
+      product.images.map((p) =>
+        images.push({ original: p.url, thumbnail: p.url })
+      )
+    }
+
+    return res.status(201).json({ product, images })
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({
