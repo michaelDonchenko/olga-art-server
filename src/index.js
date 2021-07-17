@@ -22,6 +22,8 @@ const productRoutes = require('./routes/product')
 const cloudinaryRoutes = require('./routes/cloudinary')
 const adminRoutes = require('./routes/admin')
 const messageRoutes = require('./routes/message')
+const cartRoutes = require('./routes/cart')
+const orderRoutes = require('./routes/order')
 
 //use routes
 app.use('/api/auth', authRoutes)
@@ -30,6 +32,8 @@ app.use('/api/product', productRoutes)
 app.use('/api/cloudinary', cloudinaryRoutes)
 app.use('/api/admin', adminRoutes)
 app.use('/api/message', messageRoutes)
+app.use('/api/cart', cartRoutes)
+app.use('/api/order', orderRoutes)
 
 //app start function
 const appStart = async () => {

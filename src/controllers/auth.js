@@ -129,3 +129,21 @@ exports.logout = async (req, res) => {
     })
   }
 }
+
+//update user details
+exports.updateDetails = async (req, res) => {
+  let user = req.user
+  const { userInfo } = req.body
+  try {
+    user.userInfo = userInfo
+
+    await user.save()
+
+    return res.status(200).json({ user, message: 'details updated succefully' })
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).json({
+      message: 'An error occurred, for any issue please you can contact us.',
+    })
+  }
+}

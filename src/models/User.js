@@ -46,6 +46,18 @@ const UserSchema = new Schema(
       type: ObjectId,
       ref: 'Cart',
     },
+
+    userInfo: {
+      email: String,
+      name: String,
+      phone: String,
+      country: String,
+      city: String,
+      street: String,
+      zipCode: String,
+      homeNumber: String,
+      apartment: String,
+    },
   },
   { timestamps: true }
 )

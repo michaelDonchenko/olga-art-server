@@ -5,6 +5,7 @@ const {
   verifyAccount,
   allUsers,
   logout,
+  updateDetails,
 } = require('../controllers/auth')
 const { validationMiddleware } = require('../middlewares/express-validator')
 const {
@@ -25,5 +26,6 @@ router.get(
 )
 router.get('/users', userAuth, adminCheck, allUsers)
 router.get('/logout', logout)
+router.post('/update-details', userAuth, updateDetails)
 
 module.exports = router

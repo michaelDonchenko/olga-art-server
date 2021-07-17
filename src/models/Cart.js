@@ -13,13 +13,16 @@ const CartSchema = new Schema(
         price: Number,
       },
     ],
-    cartTotal: Number,
-    deliveryPrice: Number,
+
+    deliveryOption: String,
     paymentMethod: String,
+    cartTotal: Number,
     totalAfterDiscount: Number,
+
     orderdBy: { type: ObjectId, ref: 'User' },
   },
   { timestamps: true }
 )
 
-module.exports = model('Cart', CartSchema)
+const Cart = model('Cart', CartSchema)
+module.exports = Cart
