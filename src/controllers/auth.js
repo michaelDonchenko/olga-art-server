@@ -14,8 +14,8 @@ exports.register = async (req, res) => {
 
     let html = `
       <h1>Hello ${user.email},</h1>
-      <h2>Welcome to our jewelry website,</h2>
-      <p>Please click the following link in order to verify your account</p>
+      <h2>Welcome to o-d-jewelry.com,</h2>
+      <p>Please click the following link in order to activate your account</p>
       <a href="${SERVER_URL}/api/auth/verify-account/${user.verificationCode}">Verify Account</a>
       `
 

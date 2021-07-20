@@ -51,8 +51,10 @@ exports.getOrder = async (req, res) => {
         .json({ message: 'There was an error could not find the order' })
     }
 
-    if (String(user._id) !== String(order.orderdBy)) {
-      return res.status(401).json({ message: 'You cannt access this order' })
+    if (user.role !== 'admin') {
+      if (String(user._id) !== String(order.orderdBy)) {
+        return res.status(401).json({ message: 'You cannt access this order' })
+      }
     }
 
     return res.status(200).json({ order })
@@ -68,11 +70,12 @@ exports.getOrder = async (req, res) => {
 exports.getOrders = async (req, res) => {
   const limit = req.query.limit ? parseInt(req.query.limit) : 8
   const page = req.query.page ? parseInt(req.query.page) : 1
+  const sort = req.query.sort !== 'undefined' ? parseInt(req.query.sort) : -1
 
   try {
     const orders = await Order.find()
       .populate('products.product')
-      .sort({ createdAt: -1 })
+      .sort({ createdAt: sort })
       .skip((page - 1) * limit)
       .limit(limit)
 
@@ -124,6 +127,48 @@ exports.getUserOrders = async (req, res) => {
       orders,
       pages: Math.ceil(count / limit),
     })
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred, for any issue please you can contact us.',
+    })
+  }
+}
+
+exports.paypalPayment = async (req, res) => {
+  const { id } = req.params
+
+  try {
+    const order = await Order.findByIdAndUpdate(
+      id,
+      { isPaid: true },
+      { new: true }
+    )
+
+    res.json({ message: 'payment status updated succefully', order })
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred, for any issue please you can contact us.',
+    })
+  }
+}
+
+exports.updateOrderStatus = async (req, res) => {
+  const { id } = req.params
+
+  const { isPaid, orderStatus, trackNumber, url } = req.body
+
+  try {
+    const order = await Order.findByIdAndUpdate(
+      id,
+      { isPaid, orderStatus, trackNumber, url },
+      { new: true }
+    )
+
+    res.json({ message: 'Order updated succefully', order })
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({

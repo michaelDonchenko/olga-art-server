@@ -22,7 +22,7 @@ const OrderSchema = new Schema(
     orderStatus: {
       type: String,
       default: 'Not Processed',
-      enum: ['Not Processed', 'Product Sent', 'Cancelled', 'Delivered'],
+      enum: ['Not Processed', 'Order Sent', 'Cancelled', 'Delivered'],
     },
 
     isPaid: {
