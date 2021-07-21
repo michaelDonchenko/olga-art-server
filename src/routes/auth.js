@@ -6,6 +6,9 @@ const {
   allUsers,
   logout,
   updateDetails,
+  forgotPassword,
+  passwordResetValidation,
+  passwordResetAction,
 } = require('../controllers/auth')
 const { validationMiddleware } = require('../middlewares/express-validator')
 const {
@@ -27,5 +30,17 @@ router.get(
 router.get('/users', userAuth, adminCheck, allUsers)
 router.get('/logout', logout)
 router.post('/update-details', userAuth, updateDetails)
+
+//forgot password endpoint
+router.post('/forgot-password', forgotPassword)
+
+//reset password validation
+router.get(
+  '/password-reset-validation/:resetPasswordToken',
+  passwordResetValidation
+)
+
+//reset password action
+router.post('/password-reset', passwordResetAction)
 
 module.exports = router
