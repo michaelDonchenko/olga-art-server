@@ -275,3 +275,20 @@ exports.adminProducts = async (req, res) => {
     })
   }
 }
+
+exports.mostWishedProducts = async (req, res) => {
+  try {
+    const products = await Product.find()
+      .populate('category')
+      .sort({ wishlist: -1 })
+      .limit(3)
+
+    return res.status(201).json({ products })
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      success: false,
+      message: 'An error occurred, for any issue please you can contact us.',
+    })
+  }
+}

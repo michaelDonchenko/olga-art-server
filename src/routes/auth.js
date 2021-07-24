@@ -9,6 +9,7 @@ const {
   forgotPassword,
   passwordResetValidation,
   passwordResetAction,
+  getPaypalClientId,
 } = require('../controllers/auth')
 const { validationMiddleware } = require('../middlewares/express-validator')
 const {
@@ -42,5 +43,7 @@ router.get(
 
 //reset password action
 router.post('/password-reset', passwordResetAction)
+//paypal client id
+router.get('/get-paypal-client-id', userAuth, getPaypalClientId)
 
 module.exports = router

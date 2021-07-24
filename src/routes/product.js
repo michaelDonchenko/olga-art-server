@@ -8,6 +8,7 @@ const {
   getRandomProducts,
   addToWishlist,
   adminProducts,
+  mostWishedProducts,
 } = require('../controllers/product')
 const { userAuth, adminCheck } = require('../middlewares/auth-middleware')
 const { validationMiddleware } = require('../middlewares/express-validator')
@@ -39,5 +40,6 @@ router.get('/admin-products', userAuth, adminCheck, adminProducts)
 router.get('/product/:id', getProduct)
 router.get('/get-random-products', getRandomProducts)
 router.post('/add-to-wishlist', userAuth, addToWishlist)
+router.get('/most-wished', mostWishedProducts)
 
 module.exports = router

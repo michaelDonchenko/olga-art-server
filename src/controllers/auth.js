@@ -1,7 +1,7 @@
 const User = require('../models/User')
 const { v4: uuidv4 } = require('uuid')
 const { sendMail } = require('./mail-sender')
-const { SERVER_URL, CLIENT_URL } = require('../constants')
+const { SERVER_URL, CLIENT_URL, PAYPAL_CLIENT_ID } = require('../constants')
 
 //Register
 exports.register = async (req, res) => {
@@ -262,6 +262,18 @@ exports.passwordResetAction = async (req, res) => {
       message:
         'Your password is saved you can now log-in with your new password.',
     })
+  } catch (error) {
+    console.log(error.message)
+    return res.status(500).json({
+      success: false,
+      message: 'An error accurred',
+    })
+  }
+}
+
+exports.getPaypalClientId = async (req, res) => {
+  try {
+    return res.status(200).json(PAYPAL_CLIENT_ID)
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({
