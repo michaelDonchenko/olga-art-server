@@ -57,7 +57,9 @@ const loginFieldsCheck = check('email').custom(async (value, { req }) => {
 //verify account validation
 const verificationValidator = param('verificationCode').custom(
   async (value, { req }) => {
-    let user = await User.findOne({ verificationCode: value })
+    let user = await User.findOne({
+      verificationCode: req.body.verificationCode,
+    })
 
     if (!user) {
       throw new Error('Invalid verification code, User is not verified.')

@@ -1,7 +1,7 @@
 const User = require('../models/User')
 const { v4: uuidv4 } = require('uuid')
 const { sendMail } = require('./mail-sender')
-const { SERVER_URL, CLIENT_URL, PAYPAL_CLIENT_ID } = require('../constants')
+const { CLIENT_URL, PAYPAL_CLIENT_ID } = require('../constants')
 
 //Register
 exports.register = async (req, res) => {
@@ -16,7 +16,7 @@ exports.register = async (req, res) => {
       <h1>Hello ${user.email},</h1>
       <h2>Welcome to o-d-jewelry.com,</h2>
       <p>Please click the following link in order to activate your account</p>
-      <a href="${SERVER_URL}/api/auth/verify-account/${user.verificationCode}">Verify Account</a>
+      <a href="${CLIENT_URL}/verify-account/${user.verificationCode}">Verify Account</a>
       `
 
     //send mail to user
@@ -79,7 +79,7 @@ exports.verifyAccount = async (req, res) => {
 
     return res.status(200).json({
       success: true,
-      message: 'The user is verified',
+      message: 'The user is verified, You may now login with your user',
     })
   } catch (error) {
     console.log(error.message)

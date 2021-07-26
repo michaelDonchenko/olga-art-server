@@ -22,8 +22,8 @@ const router = Router()
 
 router.post('/register', registerValidation, validationMiddleware, register)
 router.post('/login', loginValidation, validationMiddleware, login)
-router.get(
-  '/verify-account/:verificationCode',
+router.post(
+  '/verify-account',
   verificationValidator,
   validationMiddleware,
   verifyAccount
