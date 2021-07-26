@@ -48,10 +48,17 @@ exports.login = async (req, res) => {
     //send the user without the password field
     user.password = undefined
 
-    res.status(201).cookie('token', token, { httpOnly: true }).json({
-      message: 'Logged in succefully',
-      user,
-    })
+    res
+      .status(201)
+      .cookie('token', token, {
+        httpOnly: true,
+        sameSite: 'None',
+        secure: true,
+      })
+      .json({
+        message: 'Logged in succefully',
+        user,
+      })
   } catch (error) {
     console.log(error.message)
     res.status(500).json({
@@ -119,9 +126,12 @@ exports.allUsers = async (req, res) => {
 //logout
 exports.logout = async (req, res) => {
   try {
-    res.status(201).clearCookie('token', { httpOnly: true }).json({
-      message: 'Logged out succefully',
-    })
+    res
+      .status(201)
+      .clearCookie('token', { httpOnly: true, sameSite: 'None', secure: true })
+      .json({
+        message: 'Logged out succefully',
+      })
   } catch (error) {
     console.log(error.message)
     res.status(500).json({
