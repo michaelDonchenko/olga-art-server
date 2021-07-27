@@ -3,6 +3,7 @@ const {
   CLOUDINARY_API_KEY,
   CLOUDINARY_NAME,
   CLOUDINARY_API_SECRET,
+  TINY_API_KEY,
 } = require('../constants')
 const cloudinary = require('cloudinary')
 const { documentExists } = require('../middlewares/admin-details-middleware')
@@ -234,6 +235,17 @@ exports.updateSiteRules = async (req, res) => {
     await document.save()
 
     return res.status(200).json({ message: 'Site rules updated succefully.' })
+  } catch (error) {
+    console.log(error.message)
+    res.status(500).json({
+      message: 'An error occurred, for any issue please you can contact us.',
+    })
+  }
+}
+
+exports.sendTinyApiKey = async (req, res) => {
+  try {
+    return res.status(200).json({ tinyApiKey: TINY_API_KEY })
   } catch (error) {
     console.log(error.message)
     res.status(500).json({

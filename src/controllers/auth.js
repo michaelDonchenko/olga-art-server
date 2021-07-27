@@ -11,10 +11,11 @@ exports.register = async (req, res) => {
     let verificationCode = await uuidv4()
 
     let user = await User.create({ email, password, verificationCode })
+    const splitEmail = user.email.split('@')
 
     let html = `
-      <h1>Hello ${user.email},</h1>
-      <h2>Welcome to o-d-jewelry.com,</h2>
+      <h1>Hello ${splitEmail[0]},</h1>
+      <h2>Welcome to my jewelry shop,</h2>
       <p>Please click the following link in order to activate your account</p>
       <a href="${CLIENT_URL}/verify-account/${user.verificationCode}">Verify Account</a>
       `
@@ -176,8 +177,10 @@ exports.forgotPassword = async (req, res) => {
     await user.save()
 
     //send reset password email to the user
+    const splitEmail = user.email.split('@')
+
     let html = `
-    <h1>Hello ${user.email},</h1>
+    <h1>Hello ${splitEmail[0]},</h1>
     <h2>Do you want to reset your password?</h2>
     <p>Please click the following link in order to reset your password, if you did not request to reset your password just ingore this email.</p>
     <a href="${CLIENT_URL}/password-reset/${user.resetPasswordToken}">Reset Password</a>

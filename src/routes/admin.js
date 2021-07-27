@@ -8,12 +8,14 @@ const {
   updateAboutMe,
   getSiteRules,
   updateSiteRules,
+  sendTinyApiKey,
 } = require('../controllers/admin')
 const { userAuth, adminCheck } = require('../middlewares/auth-middleware')
 const router = Router()
 
 router.post('/upload-banner-image', userAuth, adminCheck, uploadBannerImage)
 router.post('/upload-profile-image', userAuth, adminCheck, uploadProfileImage)
+router.get('/tiny-api-key', userAuth, adminCheck, sendTinyApiKey)
 router.get('/banner', displayBanner)
 router.get('/profile-image', displayProfileImage)
 router.get('/about-me', getAboutMe)
