@@ -10,7 +10,7 @@ const passport = require('passport')
 require('./middlewares/passport-middleware')
 
 //init middlewares
-app.use(express.json())
+app.use(express.json({ limit: '10mb' }))
 app.use(cookieParser())
 app.use(cors({ origin: CLIENT_URL, credentials: true }))
 app.use(passport.initialize())

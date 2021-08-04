@@ -22,13 +22,10 @@ exports.uploadProductImage = async (req, res) => {
   }
 
   try {
-    let product = await Product.findById(id)
-
     await cloudinary.v2.uploader.upload(
       image,
       { folder: 'product-images' },
       async (error, result) => {
-        console.log(result)
         if (error) {
           console.log(error)
           return res.status(400).json({
@@ -37,18 +34,23 @@ exports.uploadProductImage = async (req, res) => {
           })
         }
 
+        let product = await Product.findById(id)
+
+        if (!product) {
+          return res.status('Could not find the product')
+        }
+
         let { public_id, secure_url } = result
 
         product.images.push({ url: secure_url, public_id })
 
         await product.save()
+        return res.status(201).json({
+          message: 'Image uploaded succefully',
+          product,
+        })
       }
     )
-
-    return res.status(201).json({
-      message: 'Image uploaded succefully',
-      product,
-    })
   } catch (error) {
     console.log(error.message)
     return res.status(500).json({
