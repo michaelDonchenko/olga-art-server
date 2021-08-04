@@ -15,42 +15,38 @@ cloudinary.config({
 
 //upload image
 exports.uploadProductImage = async (req, res) => {
-  let { array, id } = req.body
+  let { image, id } = req.body
 
-  if (!array.length) {
+  if (!image) {
     return res.status(400).json({ message: 'Please choose an image to upload' })
   }
 
   try {
     let product = await Product.findById(id)
 
-    const forLoop = async () => {
-      for (let i = 0; i < array.length; i++) {
-        await cloudinary.v2.uploader.upload(
-          array[i],
-          { folder: 'product-images' },
-          async (error, result) => {
-            if (error) {
-              console.log(error)
-              return res.status(400).json({
-                success: false,
-                message: 'Could not upload the image.',
-              })
-            }
+    await cloudinary.v2.uploader.upload(
+      image,
+      { folder: 'product-images' },
+      async (error, result) => {
+        console.log(result)
+        if (error) {
+          console.log(error)
+          return res.status(400).json({
+            success: false,
+            message: 'Could not upload the image.',
+          })
+        }
 
-            let { public_id, secure_url } = result
+        let { public_id, secure_url } = result
 
-            product.images.push({ url: secure_url, public_id })
-          }
-        )
+        product.images.push({ url: secure_url, public_id })
+
+        await product.save()
       }
-      await product.save()
-    }
-
-    await forLoop()
+    )
 
     return res.status(201).json({
-      message: 'Images was uploaded succefully',
+      message: 'Image uploaded succefully',
       product,
     })
   } catch (error) {

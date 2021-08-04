@@ -6,7 +6,6 @@ const {
 } = require('../constants')
 const cloudinary = require('cloudinary')
 const Category = require('../models/Category')
-const { ConnectionStates } = require('mongoose')
 
 //cloudinary config
 cloudinary.config({
